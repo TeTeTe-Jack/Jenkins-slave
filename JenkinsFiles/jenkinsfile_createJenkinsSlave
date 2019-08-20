@@ -1,0 +1,81 @@
+#!groovy
+
+pipeline{
+  
+  agent{
+    label 'docker-host'
+  }
+  
+  parameters{
+    string(name: 'slackChannel',defaultValue: 'jenkins-notification', description: '')
+    string(name: 'slaveName',defaultValue: 'jenkins-slave', description: '')
+    string(name: 'containerIP',defaultValue: 'xxx.xxx.xxx.xxx', description: '')
+    string(name: 'secret',defaultValue: '', description: '')
+    string(name: 'dockerPort',defaultValue: '', description: '')
+  }
+  
+  stages{
+    
+    stage('Notify slack to start backup job'){
+      steps{
+        slackSend channel: "$slackChannel", color: "good", message: "Job start ${JOB_NAME}"
+      }
+    }
+
+    stage('Check parameters'){
+      steps{
+        sh './script/checkParameter.sh -xe $slackChannel'
+        sh './script/checkParameter.sh -xe $backupSourcePath'
+        sh './script/checkParameter.sh -xe $backupDestinationPath'
+        sh './script/checkParameter.sh -xe $secret'
+        sh './script/checkParameter.sh -xe $dockerPort'
+      }
+    }
+    
+    stage('create a new container with docker api'){
+      steps{
+        sh './script/createContainer.sh -xe $slaveName $containerIP $dockerPort'
+      }
+    }
+
+    stage('yum update'){
+      steps{
+        sh './script/yumUpdate.sh -xe'
+      }
+    }
+    
+    stage('set service to startup'){
+      steps{
+        sh './script/setStartupService.sh -xe'
+      }
+    }
+    
+    stage('connect jenkins master'){
+      steps{
+        sh './script/connectJenkins.sh -xe'
+      }
+    }
+    
+  }
+  
+  post{
+    
+    always{
+      slackSend channel: "$slackChannel", color: "good", message: "Job Finish ${JOB_NAME}"
+    }
+      
+    success{
+      slackSend channel: "$slackChannel", color: 'good', message: "Job Success ${JOB_NAME}"
+    }
+    
+    failure{
+      slackSend channel: "$slackChannel", color: "danger", message: "Job Failure ${JOB_NAME}"
+    }
+    
+    aborted{
+      slackSend channel: "$slackChannel", color: "warning", message: "Job Aborted ${JOB_NAME}"
+    }
+    
+  }
+}
+
