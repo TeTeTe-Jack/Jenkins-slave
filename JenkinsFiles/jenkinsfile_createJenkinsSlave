@@ -25,8 +25,8 @@ pipeline{
     stage('Check parameters'){
       steps{
         sh './script/checkParameter.sh -xe $slackChannel'
-        sh './script/checkParameter.sh -xe $backupSourcePath'
-        sh './script/checkParameter.sh -xe $backupDestinationPath'
+        sh './script/checkParameter.sh -xe $slaveName'
+        sh './script/checkParameter.sh -xe $containerIP'
         sh './script/checkParameter.sh -xe $secret'
         sh './script/checkParameter.sh -xe $dockerPort'
       }
@@ -44,15 +44,9 @@ pipeline{
       }
     }
     
-    stage('set service to startup'){
-      steps{
-        sh './script/setStartupService.sh -xe'
-      }
-    }
-    
     stage('connect jenkins master'){
       steps{
-        sh './script/connectJenkins.sh -xe'
+        sh './script/connectJenkins.sh -xe $slaveName $dockerPort $secret ${JENKINS_URL}'
       }
     }
     
