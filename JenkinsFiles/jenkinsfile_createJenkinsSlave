@@ -42,7 +42,7 @@ pipeline{
 
     stage('yum update'){
       steps{
-        sh "./script/yumUpdate.sh -xe"
+        sh "./script/yumUpdate.sh -xe $slaveName $dockerPort"
       }
     }
     
