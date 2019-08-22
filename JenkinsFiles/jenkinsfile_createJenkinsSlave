@@ -36,19 +36,19 @@ pipeline{
     
     stage('create a new container with docker api'){
       steps{
-        sh './script/createContainer.sh -xe $slaveName $containerIP $dockerPort'
+        sh "./script/createContainer.sh -xe $slaveName $containerIP $dockerPort"
       }
     }
 
     stage('yum update'){
       steps{
-        sh './script/yumUpdate.sh -xe'
+        sh "./script/yumUpdate.sh -xe"
       }
     }
     
     stage('connect jenkins master'){
       steps{
-        sh './script/connectJenkins.sh -xe $slaveName $dockerPort $secret ${JENKINS_URL}'
+        sh "./script/connectJenkins.sh -xe $slaveName $dockerPort $secret ${JENKINS_URL}"
       }
     }
     
