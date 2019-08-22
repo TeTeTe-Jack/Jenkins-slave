@@ -7,16 +7,17 @@ pipeline{
   }
   
   parameters{
-    string(name: 'slackChannel',defaultValue: 'jenkins-notification', description: '')
-    string(name: 'slaveName',defaultValue: 'jenkins-slave', description: '')
-    string(name: 'containerIP',defaultValue: 'xxx.xxx.xxx.xxx', description: '')
-    string(name: 'secret',defaultValue: '', description: '')
-    string(name: 'dockerPort',defaultValue: '', description: '')
+    string(name: 'slackChannel', defaultValue: 'jenkins-notification', description: '')
+    string(name: 'slaveName', defaultValue: 'jenkins-slave', description: '')
+    string(name: 'containerIP', defaultValue: 'xxx.xxx.xxx.xxx', description: '')
+    string(name: 'secret', defaultValue: '', description: '')
+    string(name: 'workDir', defaultValue: '/var/lib/jenkins/', description: ''
+    string(name: 'dockerPort', defaultValue: 'xxxxx', description: '')
   }
   
   stages{
     
-    stage('Notify slack to start backup job'){
+    stage('Notify slack to create jenkins slave job'){
       steps{
         slackSend channel: "$slackChannel", color: "good", message: "Job start ${JOB_NAME}"
       }
@@ -28,6 +29,7 @@ pipeline{
         sh './script/checkParameter.sh -xe $slaveName'
         sh './script/checkParameter.sh -xe $containerIP'
         sh './script/checkParameter.sh -xe $secret'
+        sh './script/checkParameter.sh -xe $workDir'
         sh './script/checkParameter.sh -xe $dockerPort'
       }
     }
