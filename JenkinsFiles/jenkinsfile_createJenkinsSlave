@@ -11,7 +11,7 @@ pipeline{
     string(name: 'slaveName', defaultValue: 'jenkins-slave', description: '')
     string(name: 'containerIP', defaultValue: 'xxx.xxx.xxx.xxx', description: '')
     string(name: 'secret', defaultValue: '', description: '')
-    string(name: 'workDir', defaultValue: '/var/lib/jenkins/', description: ''
+    string(name: 'workDir', defaultValue: '/var/lib/jenkins/', description: '')
     string(name: 'dockerPort', defaultValue: 'xxxxx', description: '')
   }
   
