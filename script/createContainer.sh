@@ -8,6 +8,7 @@ PORT=$4
 # check parameters
 portTest=`docker -H=tcp://localhost:$PORT ps | grep "Is the docker daemon running?"`
 if test $portTest!='';then
+  echo error:$portTest
   echo $PORT is not the port of docker api.
   exit 1
 fi
