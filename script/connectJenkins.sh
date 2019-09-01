@@ -21,7 +21,7 @@ docker -H=tcp://localhost:${PORT} exec ${name} chown root:root /root/jenkins-sla
 docker -H=tcp://localhost:${PORT} exec ${name} chmod +x /root/jenkins-slave.sh
 
 # start service
-docker -H=tcp://localhost:${PORT} exec ${name} sh /root/jenkins-slave.sh
+timeout 10 docker -H=tcp://localhost:${PORT} exec ${name} sh /root/jenkins-slave.sh
 
 # delete created file
 rm -f jenkins-slave.sh
