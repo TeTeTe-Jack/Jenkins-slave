@@ -48,7 +48,7 @@ pipeline{
     
     stage('connect jenkins master'){
       steps{
-        sh "./script/connectJenkins.sh -xe $slaveName $dockerPort $secret ${JENKINS_URL}"
+        sh "./script/connectJenkins.sh -xe $slaveName $dockerPort $secret $workDir ${JENKINS_URL}"
       }
     }
     
