@@ -9,19 +9,19 @@ PORT=$4
 portTest=`docker -H=tcp://localhost:$PORT ps 2>&1 >/dev/null`
 if test "$porTest" != '';then
   echo error:$portTest
-  echo $PORT is not the port of docker api.
+  echo ${PORT} is not the port of docker api.
   exit 1
 fi
 
 nameTest=`docker -H=tcp://localhost:${PORT} ps -a --format "{{.Names}}" | grep ^${name}$`
-if test "$nameTest" != "${name}";then
-  echo $name is already exist.
+if test "${nameTest}" = "${name}";then
+  echo ${name} is already exist.
   exit 2
 fi
 
 pingTest=`ping -c 1 $IP| grep loss`
 if test "$pingTest" = '1 packets transmitted, 1 received, 0% packet loss, time 0ms';then
-  echo $IP is already exist.
+  echo ${IP} is already exist.
   exit 3
 fi
 
