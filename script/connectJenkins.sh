@@ -17,11 +17,11 @@ docker -H=tcp://localhost:${PORT} cp jenkins-slave.sh ${name}:/root/
 docker -H=tcp://localhost:${PORT} cp agent.jar ${name}:/root/
 
 # change owner and add +x
-docker -H=tcp://localhost:${PORT} exec -it ${name} chown root:root /root/jenkins-slave.sh
-docker -H=tcp://localhost:${PORT} exec -it ${name} chmod +x /root/jenkins-slave.sh
+docker -H=tcp://localhost:${PORT} exec ${name} chown root:root /root/jenkins-slave.sh
+docker -H=tcp://localhost:${PORT} exec ${name} chmod +x /root/jenkins-slave.sh
 
 # start service
-docker -H=tcp://localhost:${PORT} exec -it ${name} sh /root/jenkins-slave.sh
+docker -H=tcp://localhost:${PORT} exec ${name} sh /root/jenkins-slave.sh
 
 # delete created file
 rm -f jenkins-slave.sh
