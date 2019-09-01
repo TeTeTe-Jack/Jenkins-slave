@@ -13,8 +13,8 @@ if test "$porTest" != '';then
   exit 1
 fi
 
-nameTest=`docker -H=tcp://localhost:$PORT ps -a -f name=$name | grep -e \s*${name}$ 2>1& >/dev/null`
-if test "$nameTest" != '';then
+nameTest=`docker -H=tcp://localhost:${PORT} ps -a --format "{{.Names}}" | grep ^${name}$`
+if test "$nameTest" != "${name}";then
   echo $name is already exist.
   exit 2
 fi
