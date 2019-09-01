@@ -9,7 +9,6 @@ pipeline{
   parameters{
     string(name: 'slackChannel', defaultValue: 'jenkins-notification', description: '')
     string(name: 'slaveName', defaultValue: 'jenkins-slave', description: '')
-    string(name: 'containerIP', defaultValue: 'xxx.xxx.xxx.xxx', description: '')
     string(name: 'secret', defaultValue: '', description: '')
     string(name: 'workDir', defaultValue: '/var/lib/jenkins/', description: '')
     string(name: 'dockerPort', defaultValue: 'xxxxx', description: '')
@@ -27,7 +26,6 @@ pipeline{
       steps{
         sh './script/checkParameter.sh -xe $slackChannel'
         sh './script/checkParameter.sh -xe $slaveName'
-        sh './script/checkParameter.sh -xe $containerIP'
         sh './script/checkParameter.sh -xe $secret'
         sh './script/checkParameter.sh -xe $workDir'
         sh './script/checkParameter.sh -xe $dockerPort'
@@ -36,7 +34,7 @@ pipeline{
     
     stage('create a new container with docker api'){
       steps{
-        sh "./script/createContainer.sh -xe $slaveName $containerIP $dockerPort"
+        sh "./script/createContainer.sh -xe $slaveName $dockerPort"
       }
     }
 
