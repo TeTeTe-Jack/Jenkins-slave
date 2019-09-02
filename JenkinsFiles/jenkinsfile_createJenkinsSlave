@@ -1,0 +1,75 @@
+#!groovy
+
+pipeline{
+  
+  agent{
+    label 'docker-host'
+  }
+  
+  parameters{
+    string(name: 'slackChannel', defaultValue: 'jenkins-notification', description: '')
+    string(name: 'slaveName', defaultValue: 'jenkins-slave', description: '')
+    string(name: 'secret', defaultValue: '', description: '')
+    string(name: 'workDir', defaultValue: '/var/lib/jenkins/', description: '')
+    string(name: 'dockerPort', defaultValue: 'xxxxx', description: '')
+  }
+  
+  stages{
+    
+    stage('Notify slack to create jenkins slave job'){
+      steps{
+        slackSend channel: "$slackChannel", color: "good", message: "Job start ${JOB_NAME}"
+      }
+    }
+
+    stage('Check parameters'){
+      steps{
+        sh './script/checkParameter.sh -xe $slackChannel'
+        sh './script/checkParameter.sh -xe $slaveName'
+        sh './script/checkParameter.sh -xe $secret'
+        sh './script/checkParameter.sh -xe $workDir'
+        sh './script/checkParameter.sh -xe $dockerPort'
+      }
+    }
+    
+    stage('create a new container with docker api'){
+      steps{
+        sh "./script/createContainer.sh -xe $slaveName $dockerPort"
+      }
+    }
+
+    stage('yum update'){
+      steps{
+        sh "./script/yumUpdate.sh -xe $slaveName $dockerPort"
+      }
+    }
+    
+    stage('connect jenkins master'){
+      steps{
+        sh "./script/connectJenkins.sh -xe $slaveName $dockerPort $secret $workDir ${JENKINS_URL}"
+      }
+    }
+    
+  }
+  
+  post{
+    
+    always{
+      slackSend channel: "$slackChannel", color: "good", message: "Job Finish ${JOB_NAME}"
+    }
+      
+    success{
+      slackSend channel: "$slackChannel", color: 'good', message: "Job Success ${JOB_NAME}"
+    }
+    
+    failure{
+      slackSend channel: "$slackChannel", color: "danger", message: "Job Failure ${JOB_NAME}"
+    }
+    
+    aborted{
+      slackSend channel: "$slackChannel", color: "warning", message: "Job Aborted ${JOB_NAME}"
+    }
+    
+  }
+}
+
